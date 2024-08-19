@@ -38,7 +38,7 @@ jobs:
 
      - name: Unit Test
        run: |
-         pytest --durations=20 -p no:faulthandler --json-report --json-report-file ${{ env.runtag }}.results.json --cov pyterrier_anserini --cov-report json:${{ env.runtag }}.coverage.json tests/
+         pytest --durations=20 -p no:faulthandler --json-report --json-report-file ${{ env.runtag }}.results.json --cov pyterrier_ciff --cov-report json:${{ env.runtag }}.coverage.json tests/
 
      - name: Upload Test Results
        if: always()

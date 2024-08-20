@@ -27,6 +27,26 @@ You can install ``pyterrier-ciff`` with pip:
 Building from Built Indexes
 -------------------------------------
 
+Many indexes, such as those from Terrier and PISA, provide a ``get_corpus_iter()`` method that iterates
+through the sparse representations. You can use use these methods with :class:`~pyterrier_ciff.CiffIndexer`
+to build construct a CIFF file:
+
+.. code-block:: python
+   :caption: Build a CIFF index from a Terrier index
+
+   import pyterrier as pt
+   import pyterrier_ciff
+   terrier_index = pt.IndexFactory.of('my_index.terrier')
+   pyterrier_ciff.index(terrier_index, 'my_index.ciff')
+
+.. code-block:: python
+   :caption: Build a CIFF index from a PISA index
+
+   from pyterrier_pisa import PisaIndex
+   import pyterrier_ciff
+   pisa_index = PisaIndex('my_index.pisa')
+   pyterrier_ciff.index(pisa_index, 'my_index.ciff')
+
 Building from Learned Sparse Models
 -------------------------------------
 
@@ -39,7 +59,36 @@ Share and Load with Huggingface Datasets
 Documentation
 -------------------------------------
 
+The complete API documentation can be found here:
+
 .. toctree::
    :maxdepth: 1
 
    API Documentation <api>
+
+Citation
+-------------------------------------
+
+.. code-block:: bibtex
+   :caption: CIFF Citation
+
+   @inproceedings{DBLP:conf/sigir/LinMKMMSTV20,
+     author       = {Jimmy Lin and
+                     Joel M. Mackenzie and
+                     Chris Kamphuis and
+                     Craig Macdonald and
+                     Antonio Mallia and
+                     Michal Siedlaczek and
+                     Andrew Trotman and
+                     Arjen P. de Vries},
+     title        = {Supporting Interoperability Between Open-Source Search Engines with
+                     the Common Index File Format},
+     booktitle    = {Proceedings of the 43rd International {ACM} {SIGIR} conference on
+                     research and development in Information Retrieval, {SIGIR} 2020, Virtual
+                     Event, China, July 25-30, 2020},
+     pages        = {2149--2152},
+     publisher    = {{ACM}},
+     year         = {2020},
+     url          = {https://doi.org/10.1145/3397271.3401404},
+     doi          = {10.1145/3397271.3401404}
+   }

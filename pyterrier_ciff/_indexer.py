@@ -1,7 +1,7 @@
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, BinaryIO, Dict, Iterable, List, Union
+from typing import Any, BinaryIO, Dict, Iterable, List, Protocol, Union, runtime_checkable
 
 import numpy as np
 import pyterrier as pt
@@ -63,6 +63,7 @@ class _PostingBuffer:
 
 
 class CiffIndexer(pt.Indexer):
+    """An indexer that produces a :class:`~pyterrier_ciff.CiffIndex`."""
     def __init__(self,
         index: Union[CiffIndex, str],
         *,
@@ -70,12 +71,28 @@ class CiffIndexer(pt.Indexer):
         description: str = 'pyterrier-ciff',
         verbose: bool = True
     ):
+        """Create a CIFF indexer.
+
+        Args:
+            index: A CIFF index object or the path to the CIFF file to create.
+            scale: The scaling factor for term frequencies. Defaults to 100.
+            description: The description of the index. Defaults to 'pyterrier-ciff'.
+            verbose: Whether to show a progress bar. Defaults to True.
+        """
         self._index = index if isinstance(index, CiffIndex) else CiffIndex(index)
         self.scale = scale
         self.description = description
         self.verbose = verbose
 
-    def index(self, inp: Iterable[Dict[str, Any]]):
+    def index(self, inp: Iterable[Dict[str, Any]]) -> CiffIndex:
+        """Index the input documents.
+
+        Args:
+            inp: An iterable with ``docno`` and ``toks`` fields.
+
+        Returns:
+            The built CIFF index.
+        """
         assert not self._index.built()
 
         with tempfile.TemporaryDirectory() as tmp:
@@ -132,3 +149,22 @@ class CiffIndexer(pt.Indexer):
                     while out_docs.peek():
                         out_ciff.write(out_docs.read(16384)) # copy over in 16kb chunks
         return self._index
+
+@runtime_checkable
+class HasGetCorpusIter(Protocol):
+    def get_corpus_iter(self) -> Iterable[Dict[str, Any]]: ...
+
+
+def index(inp: Union[HasGetCorpusIter, Iterable[Dict[str, Any]]], ciff_path: str) -> CiffIndex:
+    """Index the input to the provided path.
+
+    Args:
+        inp: An iterable of documents to index to CIFF, or an object that exposes a ``get_corpus_iter`` method.
+        ciff_path: The path to write the CIFF index.
+
+    Returns:
+        The built CIFF index.
+    """
+    if isinstance(inp, HasGetCorpusIter):
+        inp = inp.get_corpus_iter()
+    return CiffIndexer(ciff_path).index(inp)

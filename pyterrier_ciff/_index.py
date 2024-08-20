@@ -21,6 +21,15 @@ class CiffIndex(pta.Artifact):
     ARTIFACT_TYPE = 'sparse_index'
     ARTIFACT_FORMAT = 'ciff'
 
+    def __init__(self, path: Union[str, Path]):
+        """Create a reference to CIFF index.
+
+        Args:
+            path: The path to the CIFF file or directory containing the CIFF file. If the path does not exit, it must
+                be built using ``indexer()`` before it can be used.
+        """
+        super().__init__(path)
+
     def indexer(self,
         *,
         scale: float = 100.,

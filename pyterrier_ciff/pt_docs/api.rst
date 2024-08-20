@@ -1,10 +1,12 @@
 ``pyterrir_ciff`` API Documentation
 =======================================
 
-``CiffIndex`` is the primary class for interacting with CIFF in PyTerrier.
-
+:class:`~pyterrier_ciff.CiffIndex` is the primary class for interacting with CIFF in PyTerrier.
 
 .. autoclass:: pyterrier_ciff.CiffIndex
+   :members:
+
+.. autoclass:: pyterrier_ciff.CiffIndexer
    :members:
 
 Protobuf Bindings

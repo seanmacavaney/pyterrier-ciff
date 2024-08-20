@@ -2,8 +2,13 @@
 
 __version__ = '0.1.0'
 
-from pyterrier_ciff._something import MyAwesomeTransformer
+from pyterrier_ciff._ciff_pb2 import DocRecord, Header, Posting, PostingsList
+from pyterrier_ciff._index import CiffIndex
+from pyterrier_ciff._indexer import CiffIndexer
 
 __all__ = [
-    'MyAwesomeTransformer',
+    'CiffIndex', 'CiffIndexer',
+
+    # protobuf
+    'DocRecord', 'Header', 'Posting', 'PostingsList',
 ]

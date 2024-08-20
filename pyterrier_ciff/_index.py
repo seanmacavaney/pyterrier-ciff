@@ -1,5 +1,7 @@
+import io
+import json
 from pathlib import Path
-from typing import Iterator, Union
+from typing import Iterator, Tuple, Union
 
 import pyterrier as pt
 import pyterrier_alpha as pta
@@ -10,6 +12,9 @@ from pyterrier_ciff._utils import protobuf_read_delimited_into
 
 
 class CiffIndex(pta.Artifact):
+    ARTIFACT_TYPE = 'sparse_index'
+    ARTIFACT_FORMAT = 'ciff'
+
     """Represents a."""
     def indexer(self,
         *,
@@ -54,3 +59,13 @@ class CiffIndex(pta.Artifact):
 
     def __iter__(self) -> Iterator[Union[PostingsList, DocRecord]]:
         return self.records_iter()
+
+    def _package_files(self) -> Iterator[Tuple[str, Union[str, io.BytesIO]]]:
+        if not self.path.is_dir() and str(self.path).endswith('.ciff'):
+            yield 'index.ciff', self.path
+            yield 'pt_meta.json', io.BytesIO(json.dumps(self._build_metadata()).encode())
+        else:
+            yield from super()._package_files()
+
+    def __repr__(self):
+        return f'CiffIndex({str(self.path)!r})'

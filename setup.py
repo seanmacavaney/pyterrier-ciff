@@ -26,10 +26,17 @@ setup(
     description="PyTerrier integrations with CIFF",
     long_description=open('README.md', 'r').read(),
     long_description_content_type="text/markdown",
-    url='seanmacavaney/pyterrier_ciff',
+    url='https://github.com/seanmacavaney/pyterrier-ciff',
     packages=find_packages(),
     include_package_data=True,
-    entry_points={},
+    entry_points={
+        'pyterrier.artifact': [
+            'sparse_index.ciff = pyterrier_ciff:CiffIndex',
+        ],
+        'pyterrier.artifact.metadata_adapter': [
+            'sparse_index.ciff = pyterrier_ciff._utils:_ciff_metadata_adapter',
+        ],
+    },
     install_requires=get_requirements('requirements.txt'),
     python_requires='>=3.10',
 )

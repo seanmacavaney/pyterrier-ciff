@@ -167,4 +167,4 @@ def index(inp: Union[HasGetCorpusIter, Iterable[Dict[str, Any]]], ciff_path: str
     """
     if isinstance(inp, HasGetCorpusIter):
         inp = inp.get_corpus_iter()
-    return CiffIndexer(ciff_path).index(inp)
+    return CiffIndexer(ciff_path, scale=1.).index(inp)

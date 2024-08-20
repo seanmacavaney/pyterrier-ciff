@@ -28,24 +28,26 @@ Building from Built Indexes
 -------------------------------------
 
 Many indexes, such as those from Terrier and PISA, provide a ``get_corpus_iter()`` method that iterates
-through the sparse representations. You can use use these methods with :class:`~pyterrier_ciff.CiffIndexer`
+through the sparse representations. You can use use these methods with :func:`pyterrier_ciff.index`
 to build construct a CIFF file:
 
 .. code-block:: python
    :caption: Build a CIFF index from a Terrier index
 
-   import pyterrier as pt
-   import pyterrier_ciff
-   terrier_index = pt.IndexFactory.of('my_index.terrier')
-   pyterrier_ciff.index(terrier_index, 'my_index.ciff')
+   >>> import pyterrier as pt
+   >>> import pyterrier_ciff
+   >>> terrier_index = pt.IndexFactory.of('my_index.terrier')
+   >>> pyterrier_ciff.index(terrier_index, 'my_index.ciff')
+   CiffIndex('my_index.ciff')
 
 .. code-block:: python
    :caption: Build a CIFF index from a PISA index
 
-   from pyterrier_pisa import PisaIndex
-   import pyterrier_ciff
-   pisa_index = PisaIndex('my_index.pisa')
-   pyterrier_ciff.index(pisa_index, 'my_index.ciff')
+   >>> from pyterrier_pisa import PisaIndex
+   >>> import pyterrier_ciff
+   >>> pisa_index = PisaIndex('my_index.pisa')
+   >>> pyterrier_ciff.index(pisa_index, 'my_index.ciff')
+   CiffIndex('my_index.ciff')
 
 Building from Learned Sparse Models
 -------------------------------------

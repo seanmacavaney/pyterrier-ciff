@@ -9,6 +9,8 @@
 .. autoclass:: pyterrier_ciff.CiffIndexer
    :members:
 
+.. autofunction:: pyterrier_ciff.index
+
 Protobuf Bindings
 ----------------------------------------
 

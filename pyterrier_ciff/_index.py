@@ -12,22 +12,38 @@ from pyterrier_ciff._utils import protobuf_read_delimited_into
 
 
 class CiffIndex(pta.Artifact):
+    """Represents a CIFF "index" file.
+
+    CIFF files are a compact binary format for storing and sharing inverted indexes using `Protocol Buffers
+    <https://protobuf.dev/>`_.
+    """
+
     ARTIFACT_TYPE = 'sparse_index'
     ARTIFACT_FORMAT = 'ciff'
 
-    """Represents a."""
     def indexer(self,
         *,
         scale: float = 100.,
         description: str = 'pyterrier-ciff',
         verbose: bool = True
     ) -> pt.Indexer:
+        """Create a CIFF indexer.
+
+        The indexer accepts an iterable with a docno and toks fields.
+
+        Args:
+            scale: The scaling factor for term frequencies. Defaults to 100.
+            description: The description of the index. Defaults to 'pyterrier-ciff'.
+            verbose: Whether to show a progress bar. Defaults to True.
+        """
         return pyterrier_ciff.CiffIndexer(self, scale=scale, description=description, verbose=verbose)
 
     def built(self) -> bool:
+        """Check if the index has been built."""
         return self.ciff_file_path().exists()
 
     def ciff_file_path(self) -> Path:
+        """Get the path to the CIFF file."""
         if self.path.is_dir():
             return self.path/'index.ciff'
         if str(self.path).endswith('.ciff'):
@@ -37,6 +53,7 @@ class CiffIndex(pta.Artifact):
         return self.path/'index.ciff'
 
     def header(self) -> Header:
+        """Get the header of the CIFF file (if it has been built)."""
         assert self.built()
         with self.ciff_file_path().open('rb') as ciff_in:
             header = pyterrier_ciff.Header()
@@ -44,6 +61,7 @@ class CiffIndex(pta.Artifact):
         return header
 
     def records_iter(self) -> Iterator[Union[PostingsList, DocRecord]]:
+        """Iterate over the PostingsList and DocRecord records in the CIFF file (if it has been built)."""
         assert self.built()
         with self.ciff_file_path().open('rb') as ciff_in:
             header = pyterrier_ciff.Header()

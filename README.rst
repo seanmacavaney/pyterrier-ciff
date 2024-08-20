@@ -1,0 +1,1 @@
+pyterrier_ciff/pt_docs/index.rst

@@ -109,8 +109,10 @@ The complete API documentation can be found here:
 
    API Documentation <api>
 
-Citation
+Acknowledgements
 -------------------------------------
+
+This extension builds upon the CIFF initiative. If you use it, please be sure to cite CIFF:
 
 .. code-block:: bibtex
    :caption: CIFF Citation
@@ -135,3 +137,28 @@ Citation
      url          = {https://doi.org/10.1145/3397271.3401404},
      doi          = {10.1145/3397271.3401404}
    }
+
+This extension was built as part of the PyTerrier project. If you use it, please be sure to cite PyTerrier:
+
+.. code-block:: bibtex
+   :caption: PyTerrier Citation
+
+   @inproceedings{DBLP:conf/cikm/MacdonaldTMO21,
+     author       = {Craig Macdonald and
+                     Nicola Tonellotto and
+                     Sean MacAvaney and
+                     Iadh Ounis},
+     title        = {PyTerrier: Declarative Experimentation in Python from {BM25} to Dense
+                     Retrieval},
+     booktitle    = {{CIKM} '21: The 30th {ACM} International Conference on Information
+                     and Knowledge Management, Virtual Event, Queensland, Australia, November
+                     1 - 5, 2021},
+     pages        = {4526--4533},
+     publisher    = {{ACM}},
+     year         = {2021},
+     url          = {https://doi.org/10.1145/3459637.3482013},
+     doi          = {10.1145/3459637.3482013}
+   }
+
+This extension was written by `Sean MacAvaney <https://macavaney.us/>`__ at the University of Glasgow.
+Check out the GitHub for `a full list of contributors <https://github.com/seanmacavaney/pyterrier-ciff/graphs/contributors>`__.

@@ -50,27 +50,27 @@ class CiffIndexer(pt.Indexer):
             total_docs = 0
             with (tmp/'postings').open('w+b') as out_postings, \
                  (tmp/'docno').open('w+b') as out_docs:
-                for record in invert(inp, scale=self.scale, verbose=self.verbose):
-                    if record['type'] == 'doc':
+                for rtype, record in invert(inp, scale=self.scale, verbose=self.verbose):
+                    if rtype == 'doc':
                         total_docs += 1
-                        doc_length = int(record['tfs'].sum())
+                        doc_length = int(record.tfs.sum())
                         total_terms_in_collection += doc_length
                         doc = DocRecord()
-                        doc.docid = record['did']
-                        doc.collection_docid = record['docno']
+                        doc.docid = record.did
+                        doc.collection_docid = record.docno
                         doc.doclength = doc_length
                         protobuf_write_delimited_to(doc, out_docs)
-                    elif record['type'] == 'term':
+                    elif rtype == 'term':
                         total_postings_lists += 1
                         posting_list = PostingsList()
-                        posting_list.term = record['term']
-                        record['dids'][1:] = record['dids'][1:] - record['dids'][:1] # gap encoding
-                        for i in range(record['dids'].shape[0]):
+                        posting_list.term = record.term
+                        record.dids[1:] = record.dids[1:] - record.dids[:-1] # gap encoding
+                        for i in range(record.dids.shape[0]):
                             posting = posting_list.postings.add()
-                            posting.docid = record['dids'][i]
-                            posting.tf = record['tfs'][i]
-                        posting_list.df = int(record['tfs'].shape[0])
-                        posting_list.cf = int(record['tfs'].sum())
+                            posting.docid = record.dids[i]
+                            posting.tf = record.tfs[i]
+                        posting_list.df = int(record.tfs.shape[0])
+                        posting_list.cf = int(record.tfs.sum())
                         protobuf_write_delimited_to(posting_list, out_postings)
                 with pta.io.finalized_open(self._index.ciff_file_path(), 'b') as out_ciff:
                     header = Header()

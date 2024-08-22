@@ -11,6 +11,8 @@
 
 .. autofunction:: pyterrier_ciff.index
 
+.. autofunction:: pyterrier_ciff.invert
+
 Protobuf Bindings
 ----------------------------------------
 

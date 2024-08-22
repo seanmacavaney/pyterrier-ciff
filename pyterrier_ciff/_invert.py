@@ -1,7 +1,6 @@
 import tempfile
-from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, BinaryIO, Dict, Iterable, List, Tuple
+from typing import Any, BinaryIO, Dict, Iterable, Iterator, List, NamedTuple, Tuple, Union
 
 import numpy as np
 import pyterrier as pt
@@ -51,8 +50,46 @@ class _PostingBuffer:
         return dids, tfs
 
 
-def invert(inp: Iterable[Dict[str, Any]], *, scale: float = 100., verbose: bool = False):
-    """Inverts the provided stream of documents, calling ``on_doc`` and ``on_term`` along the way.
+class InvertDoc(NamedTuple):
+    did: int
+    docno: str
+    tids: np.array
+    tfs: np.array
+
+
+class InvertTerm(NamedTuple):
+    tid: int
+    term: str
+    dids: np.array
+    tfs: np.array
+
+
+class InvertRecord(NamedTuple):
+    type: str
+    data: Union[InvertDoc, InvertTerm]
+
+
+def invert(inp: Iterable[Dict[str, Any]], *, scale: float = 100., verbose: bool = False) -> Iterator[InvertRecord]:
+    """Inverts the provided stream of documents, yielding "doc" and "term" records as they are finalized.
+
+    The function yields all documents before terms. It also assigns dids and tids from 0 increasing by 1.
+
+    .. code-block:: python
+        :caption: Invert a stream of documents using :meth:`~pyterrier_ciff.invert`
+
+        >>> from pyterrier_ciff import invert
+        >>> docs = [
+        ...   {"docno": "100", "toks": {"a": 0.02, "b": 1.41}},
+        ...   {"docno": "101", "toks": {"b": 2.15, "c": -3.83, "d": 4.65, "e": 0.42}},
+        ... ]
+        >>> for record in invert(docs):
+        ...   print(record)
+        InvertRecord(type='doc', data=InvertDoc(did=0, docno='100', tids=array([0, 1]), tfs=array([2, 141])))
+        InvertRecord(type='doc', data=InvertDoc(did=1, docno='101', tids=array([1, 2, 3]), tfs=array([215, 465, 42])))
+        InvertRecord(type='term', data=InvertTerm(tid=0, term='a', dids=array([0]), tfs=array([2])))
+        InvertRecord(type='term', data=InvertTerm(tid=1, term='b', dids=array([0, 1]), tfs=array([141, 215])))
+        InvertRecord(type='term', data=InvertTerm(tid=2, term='d', dids=array([1]), tfs=array([465])))
+        InvertRecord(type='term', data=InvertTerm(tid=3, term='e', dids=array([1]), tfs=array([42])))
 
     Args:
         inp: An iterable with ``docno`` and ``toks`` fields.
@@ -78,23 +115,21 @@ def invert(inp: Iterable[Dict[str, Any]], *, scale: float = 100., verbose: bool 
                 tfs.append(tf)
                 # Update the buffer entry and flush (if needed)
                 b.add(did, tf, scratch)
-            yield {
-                'type': 'doc',
-                'did': did,
-                'docno': doc['docno'],
-                'tids': np.array(tids, dtype=np.uint32),
-                'tfs': np.array(tfs, dtype=np.uint32),
-            }
+            yield InvertRecord('doc', InvertDoc(
+                did,
+                doc['docno'],
+                np.array(tids, dtype=np.uint32),
+                np.array(tfs, dtype=np.uint32),
+            ))
 
         it = buffer.items()
         if verbose:
             it = pt.tqdm(it, unit='term', desc='posting')
         for term, buf in it:
             dids, tfs = buf.load(scratch)
-            yield {
-                'type': 'term',
-                'tid': buf.term_id,
-                'term': term,
-                'dids': dids,
-                'tfs': tfs,
-            }
+            yield InvertRecord('term', InvertTerm(
+                buf.term_id,
+                term,
+                dids,
+                tfs,
+            ))

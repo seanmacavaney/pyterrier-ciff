@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyterrier-ciff"
+description = "PyTerrier integrations with CIFF"
+requires-python = ">=3.10"
+authors = [
+  {name = "Sean MacAvaney", email = "sean.macavaney@glasgow.ac.uk"},
+]
+maintainers = [
+  {name = "Sean MacAvaney", email = "sean.macavaney@glasgow.ac.uk"},
+]
+readme = "README.rst"
+classifiers = [
+  "Programming Language :: Python",
+  "Operating System :: OS Independent",
+  "Topic :: Text Processing",
+  "Topic :: Text Processing :: Indexing",
+  "License :: OSI Approved :: MIT License",
+]
+dynamic = ["version", "dependencies"]
+
+[tool.setuptools.dynamic]
+version = {attr = "pyterrier_ciff.__version__"}
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+exclude = ["tests"]
+
+[project.urls]
+Repository = "https://github.com/seanmacavaney/pyterrier-ciff"
+"Bug Tracker" = "https://github.com/seanmacavaney/pyterrier-ciff/issues"
+
+[project.entry-points."pyterrier.artifact"]
+"sparse_index.ciff" = "pyterrier_ciff:CiffIndex"
+
+[project.entry-points."pyterrier.artifact.metadata_adapter"]
+"sparse_index.ciff" = "pyterrier_ciff._utils:_ciff_metadata_adapter"

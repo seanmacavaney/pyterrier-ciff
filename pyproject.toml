@@ -12,7 +12,7 @@ authors = [
 maintainers = [
   {name = "Sean MacAvaney", email = "sean.macavaney@glasgow.ac.uk"},
 ]
-readme = "README.rst"
+readme = "README.md"
 classifiers = [
   "Programming Language :: Python",
   "Operating System :: OS Independent",

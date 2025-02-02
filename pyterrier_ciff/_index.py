@@ -11,7 +11,7 @@ from pyterrier_ciff import DocRecord, Header, PostingsList
 from pyterrier_ciff._utils import protobuf_read_delimited_into
 
 
-class CiffIndex(pta.Artifact):
+class CiffIndex(pt.Artifact):
     """Represents a CIFF "index" file.
 
     CIFF files are a compact binary format for storing and sharing inverted indexes using `Protocol Buffers
@@ -96,3 +96,15 @@ class CiffIndex(pta.Artifact):
 
     def __repr__(self):
         return f'CiffIndex({str(self.path)!r})'
+
+    @staticmethod
+    def from_ciff_hub(name: str) -> 'CiffIndex':
+        """Loads a CIFF index from the `CIFF Hub <https://github.com/pisa-engine/ciff-hub>`__.
+
+        Args:
+            name: The name of the CIFF file in CIFF Hub, e.g., ``esplade/bp-msmarco-passage-esplade-quantized``
+
+        Returns:
+            :class:`~pyterrier_ciff.CiffIndex`: The CIFF index downloaded from the hub.
+        """
+        return CiffIndex.from_url(f'ciff-hub:{name}')

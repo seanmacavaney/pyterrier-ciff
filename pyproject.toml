@@ -38,3 +38,6 @@ Repository = "https://github.com/seanmacavaney/pyterrier-ciff"
 
 [project.entry-points."pyterrier.artifact.metadata_adapter"]
 "sparse_index.ciff" = "pyterrier_ciff._utils:_ciff_metadata_adapter"
+
+[project.entry-points."pyterrier.artifact.url_protocol_resolver"]
+"ciff-hub" = "pyterrier_ciff._ciff_hub_url_resolver:_ciff_hub_url_resolver"

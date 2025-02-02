@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Iterator, Tuple, Union
 
 import pyterrier as pt
-import pyterrier_alpha as pta
 
 import pyterrier_ciff
 from pyterrier_ciff import DocRecord, Header, PostingsList

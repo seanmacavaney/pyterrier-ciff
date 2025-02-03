@@ -13,6 +13,8 @@ CIFF + PyTerrier
 - Build CIFF indexes from learned sparse retrieval models. `[example] <#building-from-learned-sparse-models>`__
 - Parse CIFF files to get the postings and document records. `[example] <#parsing-ciff-files>`__
 - Share and load CIFF files to/from HuggingFace datasets. `[example] <#share-and-load-with-huggingface-datasets>`__
+- Load CIFF files from the CIFF Hub. `[example] <#loading-ciff-from-the-ciff-hub>`__
+
 
 Quick Start
 -------------------------------------
@@ -23,6 +25,7 @@ You can install ``pyterrier-ciff`` with pip:
    :caption: Install ``pyterrier-ciff``
 
    $ pip install pyterrier-ciff
+
 
 Building from an Index
 -------------------------------------
@@ -60,6 +63,27 @@ to build construct a CIFF file:
    :func:`pyterrier_ciff.index` uses reasonable default settings. You can customize more settings with
    :class:`~pyterrier_ciff.CiffIndexer` if you need more control over how the CIFF is constructed.
 
+
+Building from Learned Sparse Models
+----------------------------------------
+
+You can also build a CIFF index from learned sparse retrieval models, such as those from the
+`pyt-splade <https://github.com/cmacdonald/pyt_splade>`__ package.
+
+
+.. code-block:: python
+   :caption: Build a CIFF index from a a SPLADE model
+
+   >>> from pyterrier_ciff import CiffIndex
+   >>> from pyt_splade import Splade
+   >>> ciff_index = CiffIndex('splade_index.ciff')
+   >>> splade = Splade()
+   >>> pipeline = splade >> ciff_index
+   >>> my_documents = [{'docno': '0', 'text': 'PyTerrier example with SPLADE and CIFF.'}] # or load a dataset
+   >>> pipeline.index(my_documents)
+
+
+
 Share and Load with Huggingface Datasets
 ----------------------------------------
 
@@ -93,6 +117,20 @@ on HuggingFace datasets.
 
    ``to_hf`` and ``from_hf`` are provided by PyTerrier's Artifact API.
 
+
+Loading CIFF from the CIFF Hub
+----------------------------------------
+
+You can also load a :class:`~pyterrier_ciff.CiffIndex` from the `CIFF Hub <https://github.com/pisa-engine/ciff-hub>`__ using the
+:func:`~pyterrier_ciff.CiffIndex.from_ciff_hub` method:
+
+.. code-block:: python
+   :caption: Load CIFF file from the CIFF Hub
+
+   >>> from pyterrier_ciff import CiffIndex
+   >>> CiffIndex.from_ciff_hub('csv-30k/bp-csv-30k')
+
+
 API Documentation
 ----------------------------------------
 
@@ -107,6 +145,7 @@ API Documentation
 .. autofunction:: pyterrier_ciff.index
 
 .. autofunction:: pyterrier_ciff.invert
+
 
 Protobuf Bindings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

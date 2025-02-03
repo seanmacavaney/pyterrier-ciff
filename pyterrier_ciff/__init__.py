@@ -1,6 +1,6 @@
 """Top-level package for PyTerrier CIFF."""
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 from pyterrier_ciff._ciff_pb2 import DocRecord, Header, Posting, PostingsList # noqa: I001
 from pyterrier_ciff._invert import invert
